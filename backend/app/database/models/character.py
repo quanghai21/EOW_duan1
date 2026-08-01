@@ -1,33 +1,16 @@
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import Text
-
+from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy.orm import relationship
 from app.database.database import Base
 
-
 class Character(Base):
-
     __tablename__ = "characters"
 
-    id = Column(
-        Integer,
-        primary_key=True
-    )
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True, nullable=False)
+    description = Column(Text, nullable=True)
+    personality = Column(String, nullable=True)
+    greeting = Column(Text, nullable=True)
+    avatar_url = Column(String, nullable=True)
 
-    name = Column(
-        String(200),
-        nullable=False
-    )
-
-    occupation = Column(
-        String(100)
-    )
-
-    avatar = Column(
-        String(255)
-    )
-
-    description = Column(
-        Text
-    )
+    # Thêm dòng này để khớp với back_populates hoặc quan hệ từ model Persona
+    personas = relationship("Persona", back_populates="character")

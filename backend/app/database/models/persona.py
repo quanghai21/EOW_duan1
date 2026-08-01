@@ -3,6 +3,7 @@ from sqlalchemy import Integer
 from sqlalchemy import ForeignKey
 from sqlalchemy import String
 from sqlalchemy import Text
+from sqlalchemy.orm import relationship
 
 from app.database.database import Base
 
@@ -32,3 +33,6 @@ class Persona(Base):
     system_prompt = Column(
         Text
     )
+
+    # Thêm mối quan hệ ngược về Character
+    character = relationship("Character", back_populates="personas")

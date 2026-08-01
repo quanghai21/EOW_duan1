@@ -1,14 +1,15 @@
 from fastapi import FastAPI
-
-from app.api.chat import router as chat_router
-
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+
+# Import các router
+from app.api.chat import router as chat_router
+from app.api.character import router as character_router  # <-- Thêm dòng này
 
 app = FastAPI(
     title="Echoes of War API",
     version="1.0.0"
 )
-from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,14 +19,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Đăng ký router Chat
 app.include_router(
     chat_router,
     prefix="/api",
     tags=["Chat"]
 )
 
-from app.api.character import router as character_router
-
+# Đăng ký router Character (Bổ sung đoạn này)
 app.include_router(
     character_router,
     prefix="/api",
