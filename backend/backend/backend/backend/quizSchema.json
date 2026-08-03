@@ -1,0 +1,28 @@
+{
+    "quiz_id": "quiz_eow_01",
+    "title": "Kiểm tra kiến thức Chiến dịch Điện Biên Phủ",
+    "questions": [
+        {
+            "id": 1,
+            "question": "Chiến dịch Điện Biên Phủ diễn ra vào năm nào?",
+            "options": [
+                "1953",
+                "1954",
+                "1972",
+                "1975"
+            ],
+            "correct_answer": "1954"
+        },
+        {
+            "id": 2,
+            "question": "Ai là Tổng Tư lệnh kiêm Bí thư Đảng ủy mặt trận Điện Biên Phủ?",
+            "options": [
+                "Võ Nguyên Giáp",
+                "Hoàng Văn Thái",
+                "Văn Tiến Dũng",
+                "Trường Chinh"
+            ],
+            "correct_answer": "Võ Nguyên Giáp"
+        }
+    ]
+}
