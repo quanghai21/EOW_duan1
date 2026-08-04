@@ -1,82 +1,84 @@
-import { useRef, useState } from "react";
+import {
+    useState
+} from "react";
 
-function ChatInput({ onSend }) {
+function ChatInput({
+    onSend,
+    loading
+}) {
+    const [message, setMessage] =
+        useState("");
 
-    const [text, setText] = useState("");
+    const handleSubmit = (event) => {
+        event.preventDefault();
 
-    const textareaRef = useRef(null);
-
-    const resizeTextarea = () => {
-
-        textareaRef.current.style.height = "auto";
-
-        textareaRef.current.style.height =
-            textareaRef.current.scrollHeight + "px";
-
-    };
-
-    const handleChange = (e) => {
-
-        setText(e.target.value);
-
-        resizeTextarea();
-
-    };
-
-    const send = () => {
-
-        if (text.trim() === "") return;
-
-        onSend(text.trim());
-
-        setText("");
-
-        textareaRef.current.style.height = "48px";
-
-    };
-
-    const handleKeyDown = (e) => {
-
-        if (e.key === "Enter" && !e.shiftKey) {
-
-            e.preventDefault();
-
-            send();
-
+        if (
+            !message.trim() ||
+            loading
+        ) {
+            return;
         }
 
+        onSend(message);
+
+        setMessage("");
+    };
+
+    const handleKeyDown = (event) => {
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+            event.preventDefault();
+
+            handleSubmit(event);
+        }
     };
 
     return (
+        <div className="chat-input-container">
 
-        <div className="chat-input">
+            <form
+                className="chat-input-form"
+                onSubmit={handleSubmit}
+            >
 
-            <textarea
+                <textarea
+                    value={message}
+                    onChange={(event) =>
+                        setMessage(
+                            event.target.value
+                        )
+                    }
+                    onKeyDown={handleKeyDown}
+                    placeholder={
+                        "Nhập tin nhắn..."
+                    }
+                    disabled={loading}
+                    rows={1}
+                />
 
-                ref={textareaRef}
+                <button
+                    type="submit"
+                    disabled={
+                        loading ||
+                        !message.trim()
+                    }
+                    className="send-button"
+                >
+                    {loading
+                        ? "..."
+                        : "➤"}
+                </button>
 
-                rows={1}
+            </form>
 
-                value={text}
-
-                placeholder="Nhập câu hỏi..."
-
-                onChange={handleChange}
-
-                onKeyDown={handleKeyDown}
-
-            />
-
-            <button onClick={send}>
-
-                Gửi
-
-            </button>
+            <div className="input-hint">
+                Enter để gửi · Shift + Enter để xuống dòng
+            </div>
 
         </div>
-
     );
-
 }
 
 export default ChatInput;

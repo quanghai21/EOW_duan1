@@ -9,20 +9,22 @@ function Home() {
 
     const [characters, setCharacters] = useState([]);
     const [selected, setSelected] = useState(null);
+
     const [messages, setMessages] = useState([]);
+
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+
         loadCharacters();
+
     }, []);
 
-    const currentTime = () => {
+    const getTime = () => {
 
         return new Date().toLocaleTimeString([], {
-
             hour: "2-digit",
             minute: "2-digit"
-
         });
 
     };
@@ -37,7 +39,11 @@ function Home() {
 
             if (res.data.length > 0) {
 
-                changeCharacter(res.data[0]);
+                const first = res.data[0];
+
+                setSelected(first);
+
+                welcomeMessage(first);
 
             }
 
@@ -49,15 +55,11 @@ function Home() {
 
     };
 
-    const changeCharacter = async (character) => {
-
-        setSelected(character);
-
-        setMessages([]);
-
-        setLoading(true);
+    const welcomeMessage = async (character) => {
 
         try {
+
+            setLoading(true);
 
             const response = await api.post("/chat", {
 
@@ -69,20 +71,22 @@ function Home() {
             setMessages([
 
                 {
-
                     role: "assistant",
-
                     content: response.data.reply,
-
-                    time: currentTime()
-
+                    time: getTime()
                 }
 
             ]);
 
-        } catch (err) {
+        } catch {
 
-            console.log(err);
+            setMessages([
+                {
+                    role: "assistant",
+                    content: "Xin chào!",
+                    time: getTime()
+                }
+            ]);
 
         }
 
@@ -90,21 +94,19 @@ function Home() {
 
     };
 
-    const sendMessage = async (text) => {
+    const sendMessage = async (message) => {
 
         if (!selected) return;
 
-        const user = {
+        const userMessage = {
 
             role: "user",
-
-            content: text,
-
-            time: currentTime()
+            content: message,
+            time: getTime()
 
         };
 
-        setMessages(old => [...old, user]);
+        setMessages(old => [...old, userMessage]);
 
         setLoading(true);
 
@@ -113,32 +115,49 @@ function Home() {
             const response = await api.post("/chat", {
 
                 character_id: selected.id,
-
-                message: text
+                message: message
 
             });
 
-            const ai = {
+            const aiMessage = {
 
                 role: "assistant",
-
                 content: response.data.reply,
-
-                time: currentTime()
+                time: getTime()
 
             };
 
-            setMessages(old => [...old, ai]);
+            setMessages(old => [...old, aiMessage]);
 
         }
 
-        catch (err) {
+        catch {
 
-            console.log(err);
+            setMessages(old => [
+
+                ...old,
+
+                {
+                    role: "assistant",
+                    content: "Xin lỗi, hiện tại tôi chưa thể trả lời.",
+                    time: getTime()
+                }
+
+            ]);
 
         }
 
         setLoading(false);
+
+    };
+
+    const changeCharacter = async (character) => {
+
+        setSelected(character);
+
+        setMessages([]);
+
+        await welcomeMessage(character);
 
     };
 
@@ -160,21 +179,23 @@ function Home() {
 
                 {
 
-                    selected && (
+                    selected &&
 
-                        <div className="header">
+                    <div className="header">
+
+                        <div className="profile">
 
                             <img
 
-                                src={`http://127.0.0.1:8000/images/${selected.avatar}`}
-
                                 className="avatar"
+
+                                src={`http://127.0.0.1:8000/images/${selected.avatar}`}
 
                                 alt={selected.name}
 
                             />
 
-                            <div>
+                            <div className="profile-info">
 
                                 <h1>{selected.name}</h1>
 
@@ -186,23 +207,33 @@ function Home() {
 
                         </div>
 
-                    )
+                    </div>
 
                 }
 
-                <ChatWindow
+                <div className="chat-area">
 
-                    messages={messages}
+                    <ChatWindow
 
-                    loading={loading}
+                        messages={messages}
 
-                />
+                        loading={loading}
 
-                <ChatInput
+                    />
 
-                    onSend={sendMessage}
+                </div>
 
-                />
+                <div className="input-area">
+
+                    <ChatInput
+
+                        onSend={sendMessage}
+
+                        loading={loading}
+
+                    />
+
+                </div>
 
             </div>
 

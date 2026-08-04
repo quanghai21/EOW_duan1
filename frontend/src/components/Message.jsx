@@ -1,59 +1,34 @@
-function Message({ message, avatar }) {
-
-    const isUser = message.role === "user";
+function Message({ message }) {
+    const isUser =
+        message.sender === "user";
 
     return (
-
-        <div className={isUser ? "message user" : "message ai"}>
-
-            {
-
-                !isUser && (
-
-                    <img
-                        className="message-avatar"
-                        src={avatar}
-                        alt="AI"
-                    />
-
-                )
-
+        <div
+            className={
+                isUser
+                    ? "message-row user"
+                    : "message-row assistant"
             }
+        >
 
-            <div className="message-content">
-
-                <div className="bubble">
-
-                    {message.content}
-
+            {!isUser && (
+                <div className="message-avatar">
+                    AI
                 </div>
+            )}
 
-                <div className="message-time">
-
-                    {message.time}
-
-                </div>
-
+            <div
+                className={
+                    isUser
+                        ? "message-bubble user-bubble"
+                        : "message-bubble assistant-bubble"
+                }
+            >
+                {message.content}
             </div>
 
-            {
-
-                isUser && (
-
-                    <div className="user-avatar">
-
-                        Bạn
-
-                    </div>
-
-                )
-
-            }
-
         </div>
-
     );
-
 }
 
 export default Message;

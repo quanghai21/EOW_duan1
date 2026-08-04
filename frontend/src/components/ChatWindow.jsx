@@ -1,38 +1,87 @@
-import { useEffect, useRef } from "react";
+import {
+    useEffect,
+    useRef
+} from "react";
+
 import Message from "./Message";
 
-function ChatWindow({ messages, loading }) {
+function ChatWindow({
+    messages = [],
+    loading,
+    character
+}) {
     const bottomRef = useRef(null);
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({
-            behavior: "smooth",
+            behavior: "smooth"
         });
     }, [messages, loading]);
 
     return (
         <div className="chat-window">
-            {messages.map((message, index) => (
-                <Message
-                    key={index}
-                    message={message}
-                    avatar="http://127.0.0.1:8000/images/dang_thuy_tram.jpg"
-                />
-            ))}
+
+            {messages.length === 0 && (
+                <div className="welcome">
+
+                    <div className="welcome-icon">
+                        ✦
+                    </div>
+
+                    <h1>
+                        Echoes of War
+                    </h1>
+
+                    <p>
+                        Trò chuyện cùng những nhân vật
+                        lịch sử và khám phá những câu
+                        chuyện từ quá khứ.
+                    </p>
+
+                    {character && (
+                        <div className="welcome-character">
+                            Bạn đang trò chuyện cùng{" "}
+                            <strong>
+                                {character.name}
+                            </strong>
+                        </div>
+                    )}
+
+                </div>
+            )}
+
+            {messages.map(
+                (message, index) => (
+                    <Message
+                        key={
+                            message.id ||
+                            `${index}-${message.content}`
+                        }
+                        message={message}
+                    />
+                )
+            )}
 
             {loading && (
-                <div className="ai-message">
-                    <strong>Đặng Thùy Trâm</strong>
+                <div className="message-row assistant">
 
-                    <div className="loading">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                    <div className="message-avatar">
+                        AI
                     </div>
+
+                    <div className="typing-bubble">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
                 </div>
             )}
 
             <div ref={bottomRef}></div>
+
         </div>
     );
 }

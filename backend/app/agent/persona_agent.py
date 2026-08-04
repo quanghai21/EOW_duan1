@@ -1,28 +1,26 @@
-from sqlalchemy.orm import Session
-
-from app.database.models.character import Character
-from app.database.models.persona import Persona
+from app.database.repository.character_repository import CharacterRepository
+from app.database.repository.persona_repository import PersonaRepository
 
 
 class PersonaAgent:
 
-    def __init__(self, db: Session):
-        self.db = db
+    def __init__(self, db):
 
-    def load_persona(self, character_id: int):
-        character = (
-            self.db.query(Character)
-            .filter(Character.id == character_id)
-            .first()
+        self.character_repo = CharacterRepository(db)
+        self.persona_repo = PersonaRepository(db)
+
+    def load_persona(self, character_id):
+
+        character = self.character_repo.get(character_id)
+
+        if character is None:
+            return None
+
+        persona = self.persona_repo.get_by_character_id(
+            character_id
         )
 
-        persona = (
-            self.db.query(Persona)
-            .filter(Persona.character_id == character_id)
-            .first()
-        )
-
-        if not character or not persona:
+        if persona is None:
             return None
 
         return {
